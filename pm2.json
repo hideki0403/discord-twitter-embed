@@ -1,0 +1,4 @@
+{
+    "name": "discord-twitter-embed",
+    "script": "build/index.js"
+}
