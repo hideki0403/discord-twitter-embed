@@ -1,0 +1,8 @@
+useVxTwitter: false
+vxTwitterApiUrl: https://api.example.com/
+retryLimit: 3
+discordToken: YOUR_DISCORD_BOT_TOKEN
+externalEmoji:
+  like: null # <:like:123456789012345678>
+  retweet: null # <:retweet:123456789012345678>
+  reply: null # <:comment:123456789012345678>
