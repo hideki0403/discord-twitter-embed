@@ -38,33 +38,26 @@ client.on('messageCreate', async (msg) => {
         }
     })
 
+    await suppressEmbeds(msg)
+
     database.insert(msg.id, res.id, Array.from(tweetIds))
 })
 
 client.on('messageDelete', (msg) => deleteEmbed(msg))
 
 client.on('messageUpdate', async (_, msg) => {
-    if (embedsWatcher.has(msg.id) && msg.embeds.some(embed => embed.footer?.text === 'Twitter')) {
-        embedsWatcher.delete(msg.id)
-        try {
-            await msg.suppressEmbeds(true)
-        } catch (e) {
-            console.error('Failed to suppress embeds. Please check the bots permissions.')
-            console.error(e)
-        }
+    const newTweetIds = getTweetIds(msg)
+
+    if (newTweetIds && msg.embeds.some(embed => embed.footer?.text === 'Twitter')) {
+        embedsWatcher.set(msg.id, Date.now())
     }
 
-    embedsWatcher.forEach((timestamp, id) => {
-        if (Date.now() - timestamp > 1000 * 30) {
-            embedsWatcher.delete(id)
-        }
-    })
+    suppressEmbeds(msg)
 
     const message = database.get(msg.id)
     if (!message) return
 
     const oldTweetIds = message.tweetIds.split(',')
-    const newTweetIds = getTweetIds(msg)
     if (!newTweetIds) return deleteEmbed(msg)
 
     const isSameContent = oldTweetIds.every(x => newTweetIds.has(x))
@@ -193,6 +186,24 @@ async function deleteEmbed(msg: Message | PartialMessage) {
     }
 
     database.remove(msg.id)
+}
+
+async function suppressEmbeds(msg: Message | PartialMessage) {
+    if (!embedsWatcher.has(msg.id)) return
+
+    embedsWatcher.delete(msg.id)
+    try {
+        await msg.suppressEmbeds(true)
+    } catch (e) {
+        console.error('Failed to suppress embeds. Please check the bots permissions.')
+        console.error(e)
+    }
+
+    embedsWatcher.forEach((timestamp, id) => {
+        if (Date.now() - timestamp > 1000 * 30) {
+            embedsWatcher.delete(id)
+        }
+    })
 }
 
 setInterval(() => {
