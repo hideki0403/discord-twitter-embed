@@ -178,8 +178,10 @@ async function deleteEmbed(msg: Message | PartialMessage) {
     if (!messages.length) return
 
     for (const message of messages) {
+        const target = message.self === msg.id ? message.parent : message.self
+
         try {
-            await msg.channel.messages.fetch(message.self).then(x => x.delete())
+            await msg.channel.messages.fetch(target).then(x => x.delete())
         } catch (e) {
             console.error('Failed to delete message:')
             console.error(e)

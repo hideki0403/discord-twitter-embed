@@ -18,8 +18,8 @@ export function update(parent: string, tweetIds: string[]) {
     db.prepare('UPDATE embeds SET tweetIds = ? WHERE parent = ?').run(tweetIds.join(','), parent)
 }
 
-export function getAll(parent: string) {
-    return db.prepare('SELECT * FROM embeds WHERE parent = ?').all(parent) as EmbedRecord[]
+export function getAll(target: string) {
+    return db.prepare('SELECT * FROM embeds WHERE parent = ? OR self = ?').all(target, target) as EmbedRecord[]
 }
 
 export function get(parent: string) {
