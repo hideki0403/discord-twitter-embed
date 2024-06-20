@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder, Partials, Message, PartialMessage, APIEmbed, APIMessageComponent, EmbedBuilder } from 'discord.js'
+import { Client, IntentsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder, Partials, Message, PartialMessage, APIEmbed, APIMessageComponent, EmbedBuilder, MessageFlags } from 'discord.js'
 import { getTweet } from './twitter.js'
 import * as database from './database.js'
 import config from './config.js'
@@ -35,7 +35,8 @@ client.on('messageCreate', async (msg) => {
         components: contents.components.map(x => x.toJSON()),
         allowedMentions: {
             repliedUser: false
-        }
+        },
+        flags: MessageFlags.SuppressNotifications,
     })
 
     await suppressEmbeds(msg)
