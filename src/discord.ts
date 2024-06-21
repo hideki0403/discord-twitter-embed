@@ -115,7 +115,7 @@ async function createEmbed(content: Message | PartialMessage | Set<string>) {
 
         const quote = tweet.quoted
         if (quote) {
-            description += `\n\n>>> ${quote.name ?? 'Unknown'} (@${quote.username ?? '----'}): ${quote.text}`
+            description += `\n\n> ${quote.name ?? 'Unknown'} (@${quote.username ?? '----'}): ${quote.text?.replaceAll('\n', '\n> ') ?? ''}`
         }
 
         const embeds: EmbedBuilder[] = []
